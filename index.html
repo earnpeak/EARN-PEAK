@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EarnPeak</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#090909;color:#f4f4f4;min-height:100vh}
+button{cursor:pointer}
+#app{max-width:480px;margin:auto;min-height:100vh;padding:16px 15px 94px;background:radial-gradient(circle at top,#211b0c,#090909 40%)}
+.brand{display:flex;align-items:center;gap:11px;margin:6px 0 22px}
+.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#e6c36b,#8f6723);color:#111;font-weight:900;font-size:23px}
+.brand h1{font-size:21px;letter-spacing:2px}
+.brand h1 span{color:#dfb955}
+.brand small{display:block;color:#888;font-size:10px;letter-spacing:1.5px;margin-top:4px}
+.card{background:#151515;border:1px solid #292929;border-radius:17px;padding:16px;margin-bottom:13px}
+.gold{color:#e1bb5c}
+.muted{color:#999;font-size:13px}
+.title{font-size:19px;margin-bottom:12px}
+.balance{background:linear-gradient(135deg,#2c220e,#141414);border-color:#725824;padding:20px}
+.balance small{color:#b7a47a}
+.balance h2{font-size:32px;margin:10px 0;color:#e8c466}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
+.stat{background:#0c0c0c;border:1px solid #2b2b2b;border-radius:12px;padding:12px}
+.stat small{color:#888}
+.stat strong{display:block;margin-top:7px;color:#e4c065;font-size:18px}
+.btn{border:0;border-radius:11px;padding:12px 14px;background:linear-gradient(135deg,#efce76,#b48a37);color:#101010;font-weight:bold;width:100%;margin-top:9px}
+.btn.outline{background:#111;border:1px solid #b58c3c;color:#d8b45a}
+.btn.small{width:auto;padding:9px 11px;margin:0;font-size:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:#111;border:1px solid #2b2b2b;border-radius:14px;padding:14px;min-height:92px;cursor:pointer}
+.tile .emoji{font-size:23px}
+.tile b{display:block;margin-top:8px;font-size:14px}
+.tile span{font-size:11px;color:#888}
+.task{display:flex;align-items:center;gap:11px;margin-bottom:10px;padding:13px;background:#101010;border:1px solid #292929;border-radius:13px}
+.task .icon{font-size:24px}
+.task .info{flex:1}
+.task .info b{font-size:14px}
+.task .info small{display:block;color:#999;margin-top:5px}
+.task .reward{color:#e4c05f;font-weight:bold;font-size:12px}
+.task button{border:1px solid #b38b3d;color:#e1bd61;background:#171717;border-radius:9px;padding:8px 10px;font-size:11px}
+.task button:disabled{opacity:.5;cursor:not-allowed}
+.field{margin-bottom:13px}
+.field label{display:block;color:#ccc;font-size:12px;margin-bottom:7px}
+.field input,.field select{width:100%;padding:13px;border:1px solid #303030;border-radius:10px;background:#090909;color:white;outline:none}
+.field input:focus,.field select:focus{border-color:#c6a14c}
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr);background:#101010;border-top:1px solid #292929;padding:9px 5px calc(9px + env(safe-area-inset-bottom));z-index:5}
+.nav button{border:0;background:none;color:#777;font-size:10px;display:flex;flex-direction:column;gap:4px;align-items:center}
+.nav button.active{color:#e2bd60}
+.nav .nicon{font-size:19px}
+.page{display:none}
+.page.active{display:block}
+.notice{padding:12px;border-radius:12px;background:#211b0b;border:1px solid #6a5323;color:#d7b45d;font-size:12px;line-height:1.5;margin-bottom:12px}
+.listrow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #292929;font-size:13px;gap:10px}
+.listrow:last-child{border-bottom:0}
+.pill{border-radius:20px;padding:5px 8px;background:#202020;color:#d6b65e;font-size:10px}
+.historyempty{text-align:center;color:#888;padding:25px 0;font-size:13px}
+.auth{max-width:410px;margin:8vh auto;padding:18px}
+.authcard{background:#151515;border:1px solid #333;border-radius:20px;padding:20px}
+.authbrand{text-align:center;margin-bottom:22px}
+.authbrand h1{letter-spacing:3px}
+.authbrand h1 span{color:#dfb955}
+.tabs{display:flex;background:#080808;padding:4px;border-radius:10px;margin-bottom:18px}
+.tabs button{width:50%;padding:11px;border:0;background:transparent;color:#777;border-radius:8px}
+.tabs button.active{background:linear-gradient(135deg,#efce76,#b48a37);color:#111;font-weight:bold}
+.hidden{display:none!important}
+.msg{color:#dfb955;font-size:12px;text-align:center;margin-top:10px;line-height:1.5}
+.otp{display:flex;gap:6px;justify-content:center;margin:12px 0}
+.otp input{width:39px;height:45px;text-align:center;background:#080808;color:#dfb955;border:1px solid #333;border-radius:8px;font-size:18px}
+.headerrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.headerrow button{border:0;background:none;color:#d9b65b}
+.copybox{word-break:break-all;background:#090909;padding:11px;border-radius:9px;color:#d8b65c;font-size:12px;margin:10px 0}
+.footnote{text-align:center;color:#777;font-size:10px;margin:15px 0}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div class="brand">
+<div class="logo">E</div>
+<div>
+<h1>EARN<span>PEAK</span></h1>
+<small>TASKS • REWARDS • GROWTH</small>
+</div>
+</div>
+
+<div id="auth" class="auth hidden">
+<div class="authcard">
+<div class="authbrand">
+<h1>EARN<span>PEAK</span></h1>
+<p class="muted">Earn More. Rise Higher.</p>
+</div>
+
+<div class="tabs">
+<button id="authLoginTab" class="active" onclick="authMode('login')">LOGIN</button>
+<button id="authSignupTab" onclick="authMode('signup')">SIGN UP</button>
+</div>
+
+<div id="loginBox">
+<h2 class="title">Welcome Back 👋</h2>
+<div class="field">
+<label>Mobile Number</label>
+<input id="loginPhone" placeholder="+8801XXXXXXXXX" inputmode="tel">
+</div>
+<div class="field">
+<label>Password</label>
+<input id="loginPass" type="password" placeholder="Enter password">
+</div>
+<button class="btn" onclick="login()">LOGIN</button>
+</div>
+
+<div id="signupBox" class="hidden">
+<h2 class="title">Create Account ✨</h2>
+<div class="field">
+<label>Full Name</label>
+<input id="signupName" placeholder="Enter full name">
+</div>
+<div class="field">
+<label>Mobile Number</label>
+<input id="signupPhone" placeholder="+8801XXXXXXXXX" inputmode="tel">
+</div>
+<div class="field">
+<label>Password</label>
+<input id="signupPass" type="password" placeholder="Create password">
+</div>
+
+<div class="field">
+<label>Referral Code (Optional)</label>
+<input id="signupRef" placeholder="Enter referral code">
+</div>
+
+<button class="btn" onclick="sendDemoOTP()">SEND OTP CODE</button>
+
+<div id="otpWrap" class="hidden">
+<p class="muted" style="text-align:center;margin:12px">Demo OTP is shown below (not sent by SMS)</p>
+<div class="notice" id="demoOtp"></div>
+<div class="otp">
+<input maxlength="1" inputmode="numeric">
+<input maxlength="1" inputmode="numeric">
+<input maxlength="1" inputmode="numeric">
+<input maxlength="1" inputmode="numeric">
+<input maxlength="1" inputmode="numeric">
+<input maxlength="1" inputmode="numeric">
+</div>
+<button class="btn" onclick="verifyDemoOTP()">VERIFY & CREATE ACCOUNT</button>
+</div>
+</div>
+
+<div id="authMsg" class="msg"></div>
+<p class="footnote">Demo interface only • No real payments or SMS</p>
+</div>
+</div>
+
+<div id="main" class="hidden">
+
+<section class="page active" id="homePage">
+<div class="card balance">
+<small>Available Balance</small>
+<h2 id="balanceText">৳0.00</h2>
+<small>Demo account balance</small>
+<div class="stats">
+<div class="stat"><small>Total Earned</small><strong id="totalEarned">৳0.00</strong></div>
+<div class="stat"><small>Referrals</small><strong id="refCount">0</strong></div>
+</div>
+</div>
+
+<div class="card">
+<div class="headerrow">
+<h3 class="title" style="margin:0">Daily Bonus 🎁</h3>
+<span class="pill">Daily</span>
+</div>
+<p class="muted">Collect your demo bonus once per day.</p>
+<button class="btn" id="bonusBtn" onclick="claimBonus()">CLAIM BONUS +৳5</button>
+</div>
+
+<h3 class="title">Quick Access</h3>
+<div class="grid2">
+<div class="tile" onclick="go('tasks')"><div class="emoji">📋</div><b>Tasks</b><span>Complete tasks</span></div>
+<div class="tile" onclick="go('referral')"><div class="emoji">👥</div><b>Referral</b><span>Invite friends</span></div>
+<div class="tile" onclick="go('wallet')"><div class="emoji">💳</div><b>Withdraw</b><span>Wallet options</span></div>
+<div class="tile" onclick="go('history')"><div class="emoji">🧾</div><b>History</b><span>Transactions</span></div>
+</div>
+
+<div class="card" style="margin-top:14px">
+<h3 class="title">Recent Activity</h3>
+<div id="recentActivity" class="historyempty">No activity yet.</div>
+</div>
+</section>
+
+<section class="page" id="tasksPage">
+<div class="headerrow">
+<h2 class="title">Tasks 📋</h2>
+<span class="pill">Demo tasks</span>
+</div>
+<div class="notice">Tasks are examples. Rewards are simulated and not withdrawable.</div>
+<div id="taskList"></div>
+</section>
+
+<section class="page" id="referralPage">
+<h2 class="title">Referral Program 👥</h2>
+<div class="card">
+<p class="muted">Your Referral Code</p>
+<h2 class="gold" id="myReferralCode" style="margin:9px 0;font-size:28px">—</h2>
+<button class="btn outline" onclick="copyCode()">COPY CODE</button>
+<p class="muted" style="margin-top:15px">Your Referral Link</p>
+<div class="copybox" id="refLink"></div>
+<button class="btn" onclick="copyLink()">COPY REFERRAL LINK</button>
+</div>
+<div class="card">
+<h3 class="title">Referral Summary</h3>
+<div class="listrow"><span>Total Referrals</span><b id="refTotal">0</b></div>
+<div class="listrow"><span>Referral Reward</span><b class="gold">৳0.00</b></div>
+<p class="muted" style="margin-top:10px">Referral rewards will require database verification.</p>
+</div>
+</section>
+
+<section class="page" id="walletPage">
+<h2 class="title">Wallet 💳</h2>
+<div class="card balance">
+<small>Current Balance</small>
+<h2 id="walletBalance">৳0.00</h2>
+</div>
+<div class="card">
+<h3 class="title">Request Withdraw</h3>
+<div class="notice">Demo only: no real payment or transfer will occur.</div>
+<div class="field">
+<label>Payment Method</label>
+<select id="withdrawMethod"><option>bKash</option><option>Nagad</option></select>
+</div>
+<div class="field">
+<label>Account Number</label>
+<input id="withdrawNumber" inputmode="numeric" placeholder="Mobile wallet number">
+</div>
+<div class="field">
+<label>Amount (৳)</label>
+<input id="withdrawAmount" type="number" min="1" placeholder="Enter amount">
+</div>
+<button class="btn" onclick="requestWithdraw()">SUBMIT WITHDRAW REQUEST</button>
+</div>
+</section>
+
+<section class="page" id="historyPage">
+<h2 class="title">Transaction History 🧾</h2>
+<div class="card">
+<div class="headerrow"><h3>All Activity</h3></div>
+<div id="historyList" class="historyempty">No transactions yet.</div>
+</div>
+</section>
+
+<section class="page" id="notificationsPage">
+<h2 class="title">Notifications 🔔</h2>
+<div class="card">
+<div class="listrow">
+<div><b>Welcome to EarnPeak</b><p class="muted" style="margin-top:5px">Explore tasks, referral and wallet features.</p></div>
+<span class="pill">New</span>
+</div>
+<div class="listrow">
+<div><b>Demo Notice</b><p class="muted" style="margin-top:5px">All rewards and withdrawals are simulated.</p></div>
+</div>
+</div>
+</section>
+
+<section class="page" id="profilePage">
+<h2 class="title">Profile ⚙️</h2>
+<div class="card">
+<div class="field"><label>Name</label><input id="profileName" readonly></div>
+<div class="field"><label>Mobile Number</label><input id="profilePhone" readonly></div>
+<div class="listrow"><span>Referral Code</span><b class="gold" id="profileRef"></b></div>
+<button class="btn outline" onclick="logout()">LOG OUT</button>
+</div>
+</section>
+</div>
+</div>
+
+<div class="nav hidden" id="nav">
+<button class="active" onclick="go('home')"><span class="nicon">⌂</span>Home</button>
+<button onclick="go('tasks')"><span class="nicon">✓</span>Tasks</button>
+<button onclick="go('referral')"><span class="nicon">♧</span>Refer</button>
+<button onclick="go('wallet')"><span class="nicon">▣</span>Wallet</button>
+<button onclick="go('profile')"><span class="nicon">☺</span>Profile</button>
+</div>
+
+<script>
+const KEY='earnpeak_demo_v1';
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||{
+accounts:[],current:null,balance:0,earned:0,refs:0,history:[],done:[],bonusDate:null
+};
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+let otp='',pending=null;
+
+const paramRef=new URLSearchParams(location.search).get('ref');
+if(paramRef)document.getElementById('signupRef').value=paramRef;
+
+function authMode(m){
+document.getElementById('loginBox').classList.toggle('hidden',m!=='login');
+document.getElementById('signupBox').classList.toggle('hidden',m!=='signup');
+document.getElementById('authLoginTab').classList.toggle('active',m==='login');
+document.getElementById('authSignupTab').classList.toggle('active',m==='signup');
+document.getElementById('authMsg').textContent='';
+}
+
+function showAuth(){
+document.getElementById('auth').classList.remove('hidden');
+document.getElementById('main').classList.add('hidden');
+document.getElementById('nav').classList.add('hidden');
+authMode('login');
+}
+
+function sendDemoOTP(){
+let name=document.getElementById('signupName').value.trim();
+let phone=document.getElementById('signupPhone').value.trim().replace(/\s/g,'');
+let password=document.getElementById('signupPass').value;
+let ref=document.getElementById('signupRef').value.trim();
+
+if(!name||!phone||!password){
+authMsg.textContent='Fill all required fields.';
+return;
+}
+if(!/^(\+8801|01)[3-9]\d{8}$/.test(phone)){
+authMsg.textContent='Enter a valid Bangladesh mobile number.';
+return;
+}
+if(password.length<6){
+authMsg.textContent='Password must be at least 6 characters.';
+return;
+}
+if(state.accounts.some(a=>a.phone===phone)){
+authMsg.textContent='This number is already registered.';
+return;
+}
+pending={name,phone,password,ref};
+otp=String(Math.floor(100000+Math.random()*900000));
+document.getElementById('otpWrap').classList.remove('hidden');
+document.getElementById('demoOtp').textContent='DEMO OTP: '+otp;
+authMsg.textContent='Demo code created. Enter it below.';
+}
+
+function verifyDemoOTP(){
+let entered=[...document.querySelectorAll('.otp input')].map(i=>i.value).join('');
+if(!pending){authMsg.textContent='Request OTP first.';return}
+if(entered!==otp){authMsg.textContent='Incorrect OTP.';return}
+let code=String(Math.floor(10000+Math.random()*90000));
+let acct={...pending,refCode:code,referrals:0};
+state.accounts.push(acct);
+state.current=acct.phone;
+state.balance=0;
+state.earned=0;
+state.refs=0;
+state.history=[];
+state.done=[];
+state.bonusDate=null;
+save();
+enterApp();
+}
+
+function login(){
+let phone=document.getElementById('loginPhone').value.trim().replace(/\s/g,'');
+let pass=document.getElementById('loginPass').value;
+let acct=state.accounts.find(a=>a.phone===phone&&a.password===pass);
+if(!acct){authMsg.textContent='Account not found or password incorrect.';return}
+state.current=acct.phone;
+save();
+enterApp();
+}
+
+function enterApp(){
+document.getElementById('auth').classList.add('hidden');
+document.getElementById('main').classList.remove('hidden');
+document.getElementById('nav').classList.remove('hidden');
+render();
+go('home');
+}
+
+function current(){return state.accounts.find(a=>a.phone===state.current)}
+
+function go(page){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+let target=document.getElementById(page+'Page');
+if(target)target.classList.add('active');
+document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+let ix={home:0,tasks:1,referral:2,wallet:3,profile:4}[page];
+if(ix!==undefined)document.querySelectorAll('.nav button')[ix].classList.add('active');
+if(page==='history')renderHistory();
+}
+
+function render(){
+let a=current();
+if(!a)return;
+document.getElementById('balanceText').textContent='৳'+state.balance.toFixed(2);
+document.getElementById('walletBalance').textContent='৳'+state.balance.toFixed(2);
+document.getElementById('totalEarned').textContent='৳'+state.earned.toFixed(2);
+document.getElementById('refCount').textContent=state.refs;
+document.getElementById('refTotal').textContent=state.refs;
+document.getElementById('myReferralCode').textContent=a.refCode;
+let link=location.origin+location.pathname+'?ref='+a.refCode;
+document.getElementById('refLink').textContent=link;
+document.getElementById('profileName').value=a.name;
+document.getElementById('profilePhone').value=a.phone;
+document.getElementById('profileRef').textContent=a.refCode;
+let today=new Date().toISOString().slice(0,10);
+let claimed=state.bonusDate===today;
+document.getElementById('bonusBtn').disabled=claimed;
+document.getElementById('bonusBtn').textContent=claimed?'BONUS CLAIMED TODAY':'CLAIM BONUS +৳5';
+renderTasks();
+renderHistory();
+document.getElementById('recentActivity').innerHTML=state.history.length
+?state.history.slice(0,3).map(h=>`<div class="listrow"><span>${h.title}</span><b class="gold">${h.amount>=0?'+':'-'}৳${Math.abs(h.amount).toFixed(2)}</b></div>`).join('')
+:'No activity yet.';
+}
+
+const tasks=[
+{id:'tg1',title:'Join Telegram Channel',type:'Telegram',reward:2,emoji:'✈️'},
+{id:'yt1',title:'Subscribe to YouTube',type:'YouTube',reward:3,emoji:'▶️'},
+{id:'web1',title:'Visit Partner Website',type:'Website',reward:1,emoji:'🌐'},
+{id:'tg2',title:'Join Telegram Group',type:'Telegram',reward:2,emoji:'👥'}
+];
+
+function renderTasks(){
+document.getElementById('taskList').innerHTML=tasks.map(t=>
+`<div class="task">
+<div class="icon">${t.emoji}</div>
+<div class="info"><b>${t.title}</b><small>${t.type} • Reward ৳${t.reward.toFixed(2)}</small></div>
+<span class="reward">+৳${t.reward}</span>
+<button onclick="completeTask('${t.id}')" ${state.done.includes(t.id)?'disabled':''}>${state.done.includes(t.id)?'DONE':'CLAIM'}</button>
+</div>`
+).join('');
+}
+
+function addHistory(title,amount,status='Completed'){
+state.history.unshift({title,amount,status,date:new Date().toLocaleString()});
+}
+
+function claimBonus(){
+let today=new Date().toISOString().slice(0,10);
+if(state.bonusDate===today)return;
+state.bonusDate=today;
+state.balance+=5;
+state.earned+=5;
+addHistory('Daily Bonus',5);
+save();
+render();
+}
+
+function completeTask(id){
+if(state.done.includes(id))return;
+let t=tasks.find(x=>x.id===id);
+if(!t)return;
+state.done.push(id);
+state.balance+=t.reward;
+state.earned+=t.reward;
+addHistory(t.title,t.reward);
+save();
+render();
+}
+
+function requestWithdraw(){
+let method=document.getElementById('withdrawMethod').value;
+let number=document.getElementById('withdrawNumber').value.trim();
+let amount=Number(document.getElementById('withdrawAmount').value);
+if(!number||!amount||amount<=0){alert('Enter account number and valid amount.');return}
+if(amount<100){alert('Demo minimum withdraw is ৳100.');return}
+if(amount>state.balance){alert('Insufficient demo balance.');return}
+state.balance-=amount;
+addHistory('Withdraw request • '+method,-amount,'Pending');
+save();
+render();
+alert('Demo withdraw request submitted as Pending. No money was transferred.');
+document.getElementById('withdrawAmount').value='';
+document.getElementById('withdrawNumber').value='';
+}
+
+function renderHistory(){
+document.getElementById('historyList').innerHTML=state.history.length
+?state.history.map(h=>
+`<div class="listrow"><div><b>${h.title}</b><p class="muted" style="margin-top:4px">${h.date||''} • ${h.status||'Completed'}</p></div><b class="gold">${h.amount>=0?'+':'-'}৳${Math.abs(h.amount).toFixed(2)}</b></div>`
+).join('')
+:'<div class="historyempty">No transactions yet.</div>';
+}
+
+function copyCode(){
+let a=current();
+if(!a)return;
+navigator.clipboard?.writeText(a.refCode);
+alert('Referral code copied (if clipboard permission is available).');
+}
+
+function copyLink(){
+let a=current();
+if(!a)return;
+let link=location.origin+location.pathname+'?ref='+a.refCode;
+navigator.clipboard?.writeText(link);
+alert('Referral link copied (if clipboard permission is available).');
+}
+
+function logout(){
+state.current=null;
+save();
+showAuth();
+}
+
+if(state.current&&current())enterApp();
+else showAuth();
+</script>
+</body>
+  </html>
